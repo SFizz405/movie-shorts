@@ -6,8 +6,8 @@ const createVideo = (req, res, next) => {
   const stream = Readable.from(req.files.video.data);
 
   stream.pipe(bucket.openUploadStream(req.files.video.name));
-  stream.on("end", () => {
-    console.log("Upload successful!");
+  stream.on("error", (err) => {
+    console.error(err);
   });
 
   next();
