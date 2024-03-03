@@ -1,0 +1,7 @@
+.env
+.glitchdotcom.json
+.node-gyp
+.glitch-assets
+package-lock.json
+shrinkwrap.yaml
+node_modules
