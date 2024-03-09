@@ -9,34 +9,27 @@ const imagekit = require(path.join(
 const Video = require(path.join(__dirname, "..", "model", "video"));
 
 const createVideo = async (req, res, next) => {
-  await FileType.fromBuffer(req.files.video.data)
-    .then((fileType) => {
-      if (!fileType) {
-        req.errorMessage = "Cannot read file type - file may be corrupted";
-      } else if (!fileType.mime.startsWith("video/")) {
-        req.errorMessage = "File not video - file format may not be supported";
-      }
-    })
-    .catch((err) => {
-      console.error(err);
+  try {
+    const fileType = await FileType.fromBuffer(req.files.video.data);
+
+    if (!fileType) {
+      throw new Error("Cannot read file type - file may be corrupted");
+    } else if (!fileType.mime.startsWith("video/")) {
+      throw new Error("File not video - file format may not be supported");
+    }
+
+    const imagekitResponse = await imagekit.upload({
+      file: req.files.video.data,
+      fileName: req.files.video.name,
     });
 
-  if (!req.errorMessage) {
-    await imagekit
-      .upload({
-        file: req.files.video.data,
-        fileName: req.files.video.name,
-      })
-      .then(async (response) => {
-        await Video.create({
-          fileId: response.fileId,
-          name: response.name,
-          url: response.url,
-        });
-      })
-      .catch((err) => {
-        req.errorMessage = err.message;
-      });
+    await Video.create({
+      fileId: imagekitResponse.fileId,
+      name: imagekitResponse.name,
+      url: imagekitResponse.url,
+    });
+  } catch (err) {
+    req.errorMessage = err.message;
   }
 
   next();

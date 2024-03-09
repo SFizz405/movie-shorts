@@ -1,11 +1,20 @@
 <html>
   <body>
     <iframe
+      id="video"
       width="560"
       height="315"
-      src="URL"
+      src="https://ik.imagekit.io/jhzvdjpgg/spinner.gif"
       frameborder="0"
       allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
     ></iframe>
+
+    <script>
+      const video = document.getElementById("video");
+
+      fetch("/getRandomVideo")
+        .then((response) => response.text())
+        .then((url) => (video.src = url));
+    </script>
   </body>
 </html>
