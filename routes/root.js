@@ -2,8 +2,7 @@ const express = require("express");
 const fileUpload = require("express-fileupload");
 const router = express.Router();
 const path = require("path");
-const Video = require(path.join(__dirname, "..", "model", "video"));
-const { createVideo } = require(path.join(
+const { createVideo, getRandomVideo } = require(path.join(
   __dirname,
   "..",
   "controllers",
@@ -32,7 +31,7 @@ router.get("/view(.html)?", (req, res) => {
 });
 
 router.get("/getRandomVideo", async (req, res) => {
-  res.send((await Video.find({}))[0].url);
+  res.send((await getRandomVideo()).url);
 });
 
 module.exports = router;

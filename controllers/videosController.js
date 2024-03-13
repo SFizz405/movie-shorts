@@ -35,4 +35,12 @@ const createVideo = async (req, res, next) => {
   next();
 };
 
-module.exports = { createVideo };
+const getRandomVideo = async () => {
+  return (
+    (await Video.aggregate().sample(1))[0] ?? {
+      url: "https://ik.imagekit.io/jhzvdjpgg/spinner.gif",
+    }
+  );
+};
+
+module.exports = { createVideo, getRandomVideo };
